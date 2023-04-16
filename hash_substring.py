@@ -1,37 +1,31 @@
 # python3
 
 def read_input():
-    input_choice, file = input().strip(), input().strip()
-    if input_choice == 'I':
-        return input().strip(), input().strip()
-    elif input_choice == 'F':
-        path = "./tests/" + file
-        with open(path, 'r', encoding='utf-8') as file:
-            return file.readline().strip(), file.readline().strip()
+    input_choice = input().upper()
+    if "I" in input_choice:
+        return input().rstrip(), input().rstrip()
+    elif "F" in input_choice:
+        with open("tests/06") as f:
+            result= f.readline().rstrip(),f.readline().rstrip()
+            return result
+        
 
 def print_occurrences(output):
     print(' '.join(map(str, output)))
 
 def get_occurrences(pattern, text):
-    p = 31
-    m= 10**9+9
-    p_pow = 1
-    pattern_hash = 0
-    for c in pattern:
-        pattern_hash = (pattern_hash +(ord(c)-ord('a')+1)*p_pow)%m
-        p_pow = (p_pow*p)%m
-    text_hash=0
-    occurences = []
-    for i in range(len(text)):
-        text_hash = (text_hash * p + (ord(text[i]) - ord('a') + 1)) % m
-        if i >= len(pattern):
-            text_hash = (text_hash-(ord(text[i-len(pattern)])-ord('a')+1)*p**(len(pattern)))%m
-        if i >= len(pattern) - 1 and text_hash == pattern_hash:
-            if text[i-len(pattern)+1:i+1]==pattern:
-                return [i-len(pattern)+1]
-    return occurences
-
-
+    occurrences = []
+    if len(pattern) > len(text):
+        return occurrences
+    hashP = hash(pattern)
+    hashT = hash(text[:len(pattern)])
+    for i in range(len(text)-len(pattern)+1):
+        if hashP == hashT:
+            if text[i:i+len(pattern)] == pattern:
+                occurrences.append(i)
+        if i < len(text) - len(pattern):
+            hashT = hash(text[i+1:i+len(pattern)+1])
+    return occurrences
 # this part launches the functions
 if __name__ == '__main__':
     print_occurrences(get_occurrences(*read_input()))

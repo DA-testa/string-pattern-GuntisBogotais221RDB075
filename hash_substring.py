@@ -1,29 +1,35 @@
 # python3
 
 def read_input():
-    # this function needs to aquire input both from keyboard and file
-    # as before, use capital i (input from keyboard) and capital f (input from file) to choose which input type will follow
-    
-    
-    # after input type choice
-    # read two lines 
-    # first line is pattern 
-    # second line is text in which to look for pattern 
-    
-    # return both lines in one return
-    
-    # this is the sample return, notice the rstrip function
-    return (input().rstrip(), input().rstrip())
+    input_choice, file = input().strip(), input().strip()
+    if input_choice == 'I':
+        return input().strip(), input().strip()
+    elif input_choice == 'F':
+        path = "./tests/" + file
+        with open(path, 'r', encoding='utf-8') as file:
+            return file.readline().strip(), file.readline().strip()
 
 def print_occurrences(output):
-    # this function should control output, it doesn't need any return
     print(' '.join(map(str, output)))
 
 def get_occurrences(pattern, text):
-    # this function should find the occurances using Rabin Karp alghoritm 
-
-    # and return an iterable variable
-    return [0]
+    p = 31
+    m= 10**9+9
+    p_pow = 1
+    pattern_hash = 0
+    for c in pattern:
+        pattern_hash = (pattern_hash +(ord(c)-ord('a')+1)*p_pow)%m
+        p_pow = (p_pow*p)%m
+    text_hash=0
+    occurences = []
+    for i in range(len(text)):
+        text_hash = (text_hash * p + (ord(text[i]) - ord('a') + 1)) % m
+        if i >= len(pattern):
+            text_hash = (text_hash-(ord(text[i-len(pattern)])-ord('a')+1)*p**(len(pattern)))%m
+        if i >= len(pattern) - 1 and text_hash == pattern_hash:
+            if text[i-len(pattern)+1:i+1]==pattern:
+                return [i-len(pattern)+1]
+    return occurences
 
 
 # this part launches the functions
